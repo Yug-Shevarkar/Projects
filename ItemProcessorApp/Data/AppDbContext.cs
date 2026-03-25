@@ -1,15 +1,14 @@
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using ItemProcessorApp.Models;
 
-namespace ItemProcessorApp.Models
+namespace ItemProcessorApp.Data
 {
-    public class Item
+    public class AppDbContext : DbContext
     {
-        public int Id { get; set; }
-        public double Weight { get; set; }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {
+        }
 
-        public int? ParentId { get; set; }
-        public Item Parent { get; set; }
-
-        public List<Item> Children { get; set; }
+     public DbSet<ItemProcessorApp.Models.Item> Items { get; set; }
     }
 }
