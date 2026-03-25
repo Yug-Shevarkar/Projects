@@ -1,0 +1,15 @@
+@model ItemProcessorApp.Models.Item
+
+<li>
+    Weight: @Model.Weight
+
+    @if (Model.Children != null && Model.Children.Count > 0)
+    {
+        <ul>
+            @foreach (var child in Model.Children)
+            {
+                @Html.Partial("_ItemTree", child)
+            }
+        </ul>
+    }
+</li>
