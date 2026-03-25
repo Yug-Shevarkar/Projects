@@ -53,20 +53,24 @@ namespace ItemProcessorApp.Controllers
         }
 
         // 💾 Save to DB
-        private void SaveItems(Item item, int? parentId)
+       private void SaveItems(Item item, int? parentId)
+{
+    var newItem = new Item
+    {
+        Weight = item.Weight,
+        ParentId = parentId
+    };
+
+    _context.Items.Add(newItem);
+    _context.SaveChanges();
+
+    if (item.Children != null)
+    {
+        foreach (var child in item.Children)
         {
-            item.ParentId = parentId;
-
-            _context.Items.Add(item);
-            _context.SaveChanges();
-
-            if (item.Children != null)
-            {
-                foreach (var child in item.Children)
-                {
-                    SaveItems(child, item.Id);
-                }
-            }
+            SaveItems(child, newItem.Id);
         }
+    }
+}
     }
 }
