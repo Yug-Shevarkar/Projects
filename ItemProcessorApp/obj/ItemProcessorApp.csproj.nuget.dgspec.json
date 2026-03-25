@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj": {}
+    "D:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj": {}
   },
   "projects": {
-    "d:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj": {
+    "D:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "d:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
+        "projectUniqueName": "D:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
         "projectName": "ItemProcessorApp",
-        "projectPath": "d:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
+        "projectPath": "D:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
         "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-        "outputPath": "d:\\Projects\\ItemProcessorApp\\obj\\",
+        "outputPath": "D:\\Projects\\ItemProcessorApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"

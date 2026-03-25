@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "8AyKY+RVdgY=",
+  "dgSpecHash": "UCX8rlq/fJQ=",
   "success": true,
-  "projectFilePath": "d:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
+  "projectFilePath": "D:\\Projects\\ItemProcessorApp\\ItemProcessorApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Admin\\.nuget\\packages\\azure.core\\1.47.1\\azure.core.1.47.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\azure.identity\\1.14.2\\azure.identity.1.14.2.nupkg.sha512",
