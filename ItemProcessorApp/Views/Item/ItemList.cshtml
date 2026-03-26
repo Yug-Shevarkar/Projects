@@ -1,0 +1,168 @@
+@model IEnumerable<ItemProcessorApp.Models.Item>
+@{
+    ViewData["Title"] = "Items";
+}
+
+<!-- Page Header -->
+<div class="page-header-row">
+    <div class="page-header">
+        <h1>Items</h1>
+        <p>Manage all items — add, edit, delete and search</p>
+    </div>
+    <a asp-controller="Item" asp-action="Create" class="btn btn-primary">
+        <i data-feather="plus" style="width:15px;height:15px"></i> Add Item
+    </a>
+</div>
+
+<!-- Alerts -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        <i data-feather="check-circle" style="width:15px;height:15px;flex-shrink:0"></i>
+        @TempData["Success"]
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        <i data-feather="alert-circle" style="width:15px;height:15px;flex-shrink:0"></i>
+        @TempData["Error"]
+    </div>
+}
+
+<!-- Search + Filter Bar -->
+<div class="card mb-3">
+    <div class="card-body" style="padding:1rem 1.25rem; display:flex; gap:.75rem; flex-wrap:wrap; align-items:center">
+        <div class="search-bar" style="flex:1; min-width:200px">
+            <i data-feather="search" class="search-icon" style="width:15px;height:15px"></i>
+            <input id="searchInput" type="text" placeholder="Search by weight or ID…" />
+        </div>
+        <select class="form-control" id="filterStatus" style="width:auto; padding:.45rem .75rem">
+            <option value="">All Status</option>
+            <option value="processed">Processed</option>
+            <option value="unprocessed">Unprocessed</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="clearFilters()">
+            <i data-feather="x" style="width:13px;height:13px"></i> Clear
+        </button>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrapper">
+    <table class="app-table" id="itemsTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Item ID</th>
+                <th>Weight</th>
+                <th>Parent ID</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int row = 1;
+                foreach (var item in Model)
+                {
+                    <tr class="item-data-row">
+                        <td class="text-muted" style="font-size:.8rem">@row</td>
+                        <td><span class="badge badge-primary">@item.Id</span></td>
+                        <td><strong>@item.Weight.ToString("0.##") kg</strong></td>
+                        <td>
+                            @if (item.ParentId.HasValue)
+                            {
+                                <span class="badge badge-success">@item.ParentId</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted" style="font-size:.8rem">— Root</span>
+                            }
+                        </td>
+                        <td>
+                            @if (item.Children != null && item.Children.Any())
+                            {
+                                <span class="badge badge-success">Processed</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning">Unprocessed</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a asp-controller="Item" asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-outline btn-sm">
+                                    <i data-feather="edit-2" style="width:13px;height:13px"></i> Edit
+                                </a>
+                                <a asp-controller="Item" asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-outline btn-sm">
+                                    <i data-feather="eye" style="width:13px;height:13px"></i>
+                                </a>
+                                <form asp-controller="Item" asp-action="Delete" asp-route-id="@item.Id"
+                                      method="post" style="display:inline"
+                                      onsubmit="return confirm('Delete item @item.Id? This cannot be undone.')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i data-feather="trash-2" style="width:13px;height:13px"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    row++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" style="text-align:center; padding:2.5rem; color:var(--text-muted)">
+                        <i data-feather="inbox" style="width:32px;height:32px;display:block;margin:0 auto .5rem"></i>
+                        No items found. <a asp-controller="Item" asp-action="Create">Add the first item</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Row count -->
+<div style="font-size:.8rem; color:var(--text-muted); margin-top:.6rem" id="rowCount"></div>
+
+@section Scripts {
+<script>
+    var rows = document.querySelectorAll('#itemsTable .item-data-row');
+    updateCount();
+
+    document.getElementById('searchInput').addEventListener('input', filterTable);
+    document.getElementById('filterStatus').addEventListener('change', filterTable);
+
+    function filterTable() {
+        var search = document.getElementById('searchInput').value.toLowerCase();
+        var status = document.getElementById('filterStatus').value.toLowerCase();
+        rows.forEach(function(r) {
+            var text = r.textContent.toLowerCase();
+            var matchSearch = !search || text.includes(search);
+            var matchStatus = !status || text.includes(status);
+            r.style.display = (matchSearch && matchStatus) ? '' : 'none';
+        });
+        updateCount();
+    }
+
+    function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterStatus').value = '';
+        rows.forEach(function(r){ r.style.display = ''; });
+        updateCount();
+    }
+
+    function updateCount() {
+        var visible = Array.from(rows).filter(r => r.style.display !== 'none').length;
+        document.getElementById('rowCount').textContent = 'Showing ' + visible + ' item(s)';
+    }
+
+    feather.replace();
+</script>
+}
