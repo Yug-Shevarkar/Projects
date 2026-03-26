@@ -1,33 +1,80 @@
 @model ItemProcessorApp.Models.Item
 
-<h2 style="text-align:center;">Processed Result</h2>
+<h2 style="text-align:center;">Item Flow Diagram</h2>
 
-<div class="tree-container">
-    <ul>
-        @Html.Partial("_ItemTree", Model)
-    </ul>
+<div class="diagram-container">
+    <svg id="diagram" width="1000" height="600"></svg>
 </div>
 
 <div style="text-align:center; margin-top:20px;">
     <a href="/Item">Process Another Item</a>
 </div>
 
+<script>
+    const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+    const svg = document.getElementById("diagram");
+
+    let levelGap = 120;
+    let nodeGap = 80;
+
+    function drawNode(x, y, text) {
+        // circle
+        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x);
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", 20);
+        circle.setAttribute("fill", "#007bff");
+        svg.appendChild(circle);
+
+        // text
+        let label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("x", x);
+        label.setAttribute("y", y + 5);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("fill", "white");
+        label.textContent = text;
+        svg.appendChild(label);
+    }
+
+    function drawLine(x1, y1, x2, y2) {
+        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute("stroke", "#333");
+        svg.appendChild(line);
+    }
+
+    function renderTree(node, x, y, spread) {
+        drawNode(x, y, node.weight);
+
+        if (!node.children || node.children.length === 0) return;
+
+        let startX = x - (spread * (node.children.length - 1)) / 2;
+
+        node.children.forEach((child, index) => {
+            let childX = startX + index * spread;
+            let childY = y + levelGap;
+
+            drawLine(x, y + 20, childX, childY - 20);
+            renderTree(child, childX, childY, spread / 1.5);
+        });
+    }
+
+    renderTree(data, 500, 50, 200);
+</script>
+
 <style>
-.tree-container {
+.diagram-container {
     display: flex;
     justify-content: center;
     margin-top: 20px;
 }
 
-ul {
-    list-style-type: none;
-}
-
-li {
-    margin: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    display: inline-block;
-    border-radius: 5px;
+svg {
+    border: 1px solid #ddd;
+    background: #f9f9f9;
 }
 </style>
