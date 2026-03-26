@@ -1,7 +1,33 @@
 @model ItemProcessorApp.Models.Item
 
-<h2>Processed Result</h2>
+<h2 style="text-align:center;">Processed Result</h2>
 
-<ul>
-    @Html.Partial("_ItemTree", Model)
-</ul>
+<div class="tree-container">
+    <ul>
+        @Html.Partial("_ItemTree", Model)
+    </ul>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="/Item">Process Another Item</a>
+</div>
+
+<style>
+.tree-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li {
+    margin: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    display: inline-block;
+    border-radius: 5px;
+}
+</style>
