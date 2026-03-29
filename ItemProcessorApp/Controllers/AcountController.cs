@@ -22,8 +22,17 @@ namespace ItemProcessorApp.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Enter username and password";
+                return View();
+            }
+
+            username = username.Trim().ToLower();
+            password = password.Trim();
+
             var user = _context.Users
-                .FirstOrDefault(u => u.Username == username && u.Password == password);
+                .FirstOrDefault(u => u.Username.ToLower() == username && u.Password == password);
 
             if (user != null)
             {
@@ -43,7 +52,18 @@ namespace ItemProcessorApp.Controllers
         [HttpPost]
         public IActionResult Register(string username, string password)
         {
-            var exists = _context.Users.Any(u => u.Username == username);
+            System.Console.WriteLine("REGISTER HIT");
+
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Username and Password required";
+                return View();
+            }
+
+            username = username.Trim();
+            password = password.Trim();
+
+            var exists = _context.Users.Any(u => u.Username.ToLower() == username.ToLower());
 
             if (exists)
             {
@@ -59,6 +79,8 @@ namespace ItemProcessorApp.Controllers
 
             _context.Users.Add(user);
             _context.SaveChanges();
+
+            System.Console.WriteLine("DATA SAVED");
 
             return RedirectToAction("Login");
         }
