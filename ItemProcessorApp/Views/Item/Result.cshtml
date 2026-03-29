@@ -42,13 +42,13 @@
     }
 
     function render(node, x, y, gap) {
-        drawNode(x, y, node.weight);
+        drawNode(x, y, node.Weight);
 
-        if (!node.children || node.children.length === 0) return;
+        if (!node.Children || node.Children.length === 0) return;
 
-        let startX = x - (gap * (node.children.length - 1)) / 2;
+        let startX = x - (gap * (node.Children.length - 1)) / 2;
 
-        node.children.forEach((child, i) => {
+        node.Children.forEach((child, i) => {
             let childX = startX + i * gap;
             let childY = y + 120;
 

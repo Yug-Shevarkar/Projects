@@ -11,6 +11,6 @@ namespace ItemProcessorApp.Data
 
         public DbSet<Item> Items { get; set; }
 
-        public DbSet<User> Users { get; set; }  // 👈 added for login system
+        public DbSet<User> Users { get; set; }
     }
 }

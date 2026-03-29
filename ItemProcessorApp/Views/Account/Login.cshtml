@@ -18,6 +18,11 @@
                 <p class="error">@ViewBag.Error</p>
             }
         </form>
+
+        <div class="link">
+            <p>Don't have an account?</p>
+            <a href="/Account/Register">Register</a>
+        </div>
     </div>
 </div>
 
@@ -38,6 +43,19 @@ input {
     width: 100%;
     padding: 10px;
     margin: 10px 0;
+}
+
+.btn {
+    width: 100%;
+    padding: 10px;
+    background: #3b82f6;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.link {
+    margin-top: 10px;
 }
 
 .error {

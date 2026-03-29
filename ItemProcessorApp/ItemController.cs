@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using ItemProcessorApp.Models;
 using ItemProcessorApp.Data;
+using System.Collections.Generic;
 
 namespace ItemProcessorApp.Controllers
 {
@@ -13,16 +15,24 @@ namespace ItemProcessorApp.Controllers
             _context = context;
         }
 
-        // Show input page
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("User") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             return View();
         }
 
-        // Process item
         [HttpPost]
         public IActionResult Process(double weight)
         {
+            if (HttpContext.Session.GetString("User") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var root = new Item
             {
                 Weight = weight,
@@ -30,13 +40,11 @@ namespace ItemProcessorApp.Controllers
             };
 
             ProcessItem(root);
-
             SaveItems(root, null);
 
             return View("Result", root);
         }
 
-        // 🔁 Recursion logic
         private void ProcessItem(Item item)
         {
             if (item.Weight <= 1) return;
@@ -52,25 +60,24 @@ namespace ItemProcessorApp.Controllers
             }
         }
 
-        // 💾 Save to DB
-       private void SaveItems(Item item, int? parentId)
-{
-    var newItem = new Item
-    {
-        Weight = item.Weight,
-        ParentId = parentId
-    };
-
-    _context.Items.Add(newItem);
-    _context.SaveChanges();
-
-    if (item.Children != null)
-    {
-        foreach (var child in item.Children)
+        private void SaveItems(Item item, int? parentId)
         {
-            SaveItems(child, newItem.Id);
+            var newItem = new Item
+            {
+                Weight = item.Weight,
+                ParentId = parentId
+            };
+
+            _context.Items.Add(newItem);
+            _context.SaveChanges();
+
+            if (item.Children != null)
+            {
+                foreach (var child in item.Children)
+                {
+                    SaveItems(child, newItem.Id);
+                }
+            }
         }
-    }
-}
     }
 }

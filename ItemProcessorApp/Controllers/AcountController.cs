@@ -14,13 +14,11 @@ namespace ItemProcessorApp.Controllers
             _context = context;
         }
 
-        // GET: Login Page
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Login
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
@@ -33,11 +31,38 @@ namespace ItemProcessorApp.Controllers
                 return RedirectToAction("Index", "Item");
             }
 
-            ViewBag.Error = "Invalid credentials";
+            ViewBag.Error = "Invalid username or password";
             return View();
         }
 
-        // Logout
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(string username, string password)
+        {
+            var exists = _context.Users.Any(u => u.Username == username);
+
+            if (exists)
+            {
+                ViewBag.Error = "Username already exists";
+                return View();
+            }
+
+            var user = new User
+            {
+                Username = username,
+                Password = password
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Login");
+        }
+
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
