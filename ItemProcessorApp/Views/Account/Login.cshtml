@@ -1,100 +1,46 @@
 @{
     ViewData["Title"] = "Login";
-    ViewData["HideNav"] = true;   // hides the top navbar on this page
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="login-page">
-    <div class="login-card">
+<div class="center">
+    <div class="card login-card">
+        <h2>Welcome Back</h2>
+        <p>Login to continue</p>
 
-        <!-- Logo -->
-        <div class="login-logo">
-            <div class="logo-box">IP</div>
-            <h2>Item Processor</h2>
-            <p>Sign in to your account to continue</p>
-        </div>
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required />
 
-        <!-- Validation summary -->
-        @if (ViewData["Error"] != null)
-        {
-            <div class="alert alert-danger">
-                <i data-feather="alert-circle" style="width:15px;height:15px;flex-shrink:0"></i>
-                @ViewData["Error"]
-            </div>
-        }
+            <button class="btn">Login</button>
 
-        <!-- Login Form -->
-        <form method="post" asp-controller="Account" asp-action="Login" novalidate id="loginForm">
-            <div class="form-group">
-                <label class="form-label" for="username">Username</label>
-                <input id="username" name="username" type="text"
-                       class="form-control" placeholder="Enter your username"
-                       autocomplete="username" required />
-                <div class="invalid-feedback">Username is required.</div>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label" for="password">Password</label>
-                <div style="position:relative">
-                    <input id="password" name="password" type="password"
-                           class="form-control" placeholder="Enter your password"
-                           autocomplete="current-password" required
-                           style="padding-right:2.5rem" />
-                    <button type="button" id="togglePwd"
-                            style="position:absolute;right:.7rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--text-muted);">
-                        <i data-feather="eye" style="width:16px;height:16px"></i>
-                    </button>
-                </div>
-                <div class="invalid-feedback">Password is required.</div>
-            </div>
-
-            <div style="display:flex; justify-content:space-between; align-items:center; margin:.4rem 0 1.1rem">
-                <label style="display:flex;align-items:center;gap:.4rem;font-size:.85rem;cursor:pointer">
-                    <input type="checkbox" name="rememberMe" style="accent-color:var(--primary)" />
-                    Remember me
-                </label>
-                <a href="#" style="font-size:.82rem">Forgot password?</a>
-            </div>
-
-            <button type="submit" id="loginBtn" class="btn btn-primary w-100"
-                    style="justify-content:center;padding:.65rem">
-                <i data-feather="log-in" style="width:15px;height:15px"></i>
-                Sign In
-            </button>
+            @if (ViewBag.Error != null)
+            {
+                <p class="error">@ViewBag.Error</p>
+            }
         </form>
-
     </div>
 </div>
 
-@section Scripts {
-<script>
-    // Toggle password visibility
-    document.getElementById('togglePwd').addEventListener('click', function () {
-        var pwd = document.getElementById('password');
-        var icon = this.querySelector('i');
-        if (pwd.type === 'password') {
-            pwd.type = 'text';
-            icon.setAttribute('data-feather', 'eye-off');
-        } else {
-            pwd.type = 'password';
-            icon.setAttribute('data-feather', 'eye');
-        }
-        feather.replace();
-    });
-
-    // Simple client-side required validation
-    document.getElementById('loginForm').addEventListener('submit', function (e) {
-        var valid = true;
-        ['username','password'].forEach(function(id) {
-            var el = document.getElementById(id);
-            if (!el.value.trim()) {
-                el.classList.add('is-invalid');
-                valid = false;
-            } else {
-                el.classList.remove('is-invalid');
-            }
-        });
-        if (!valid) e.preventDefault();
-    });
-</script>
+<style>
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
 }
+
+.login-card {
+    width: 320px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.error {
+    color: red;
+}
+</style>

@@ -9,6 +9,8 @@ namespace ItemProcessorApp.Data
         {
         }
 
-     public DbSet<ItemProcessorApp.Models.Item> Items { get; set; }
+        public DbSet<Item> Items { get; set; }
+
+        public DbSet<User> Users { get; set; }  // 👈 added for login system
     }
 }
