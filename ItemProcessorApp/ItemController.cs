@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using ItemProcessorApp.Models;
 using ItemProcessorApp.Data;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace ItemProcessorApp.Controllers
 {
@@ -71,20 +72,31 @@ namespace ItemProcessorApp.Controllers
 
         public IActionResult Delete(int id)
         {
-            var item = _context.Items.Find(id);
+            DeleteRecursive(id);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
-            if (item != null)
+        private void DeleteRecursive(int id)
+        {
+            var children = _context.Items.Where(i => i.ParentId == id).ToList();
+
+            foreach (var child in children)
             {
-                _context.Items.Remove(item);
-                _context.SaveChanges();
+                DeleteRecursive(child.Id);
             }
 
-            return RedirectToAction("Index");
+            var item = _context.Items.Find(id);
+            if (item != null)
+                _context.Items.Remove(item);
         }
 
         public IActionResult Process(int id)
         {
             var root = _context.Items.Find(id);
+
+            if (root == null)
+                return RedirectToAction("Index");
 
             ProcessItem(root);
 
@@ -98,7 +110,7 @@ namespace ItemProcessorApp.Controllers
             var child1 = new Item { Weight = item.Weight / 2 };
             var child2 = new Item { Weight = item.Weight / 2 };
 
-            item.Children = new System.Collections.Generic.List<Item> { child1, child2 };
+            item.Children = new List<Item> { child1, child2 };
 
             foreach (var child in item.Children)
             {
