@@ -1,26 +1,29 @@
 ## 🚀 How to Run the Project
 
 ### Prerequisites
-- Visual Studio (ASP.NET workload) OR .NET SDK installed
+- Visual Studio (ASP.NET workload) OR .NET SDK
 - SQL Server + SSMS
 
-### Steps
+### Clone Repository
+git clone https://github.com/Yug-Shevarkar/Projects.git
 
-1. Clone the repository  
-   git clone [https://github.com/<your-username>/<repo-name>.git](https://github.com/Yug-Shevarkar/Projects.git)
+### Setup Database
+- Create database in SQL Server  
+- Run the provided SQL script  
 
-2. Setup Database  
-   - Create DB in SQL Server  
-   - Run provided SQL script  
-
-3. Update Connection String  
-   - Edit `Web.config`
+### Configure Connection
+- Update `Web.config` with your SQL Server details  
 
 ### ▶ Run using Visual Studio (Recommended)
 - Open `.sln` file  
 - Press **Ctrl + F5**
 
 ### ▶ Run using .NET CLI (Terminal)
-```bash
-dotnet build
-dotnet run
+dotnet build  
+dotnet run  
+
+- App runs on: https://localhost:xxxx/
+
+## 🔑 Access
+- Login using provided/default credentials  
+- Manage and process items from dashboard
