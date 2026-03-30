@@ -16,24 +16,24 @@
     const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
     const container = document.getElementById("tree");
 
-    function render(node, level = 0) {
-        let div = document.createElement("div");
-        div.style.marginLeft = (level * 30) + "px";
-        div.style.padding = "6px 0";
-
-        let prefix = level === 0 ? "" : "└── ";
-        div.innerHTML = `<span class="node">${prefix}${node.Weight}</span>`;
-
-        container.appendChild(div);
+    function createTree(node) {
+        let li = document.createElement("li");
+        li.innerHTML = `<span>${node.Weight}</span>`;
 
         if (node.Children && node.Children.length > 0) {
+            let ul = document.createElement("ul");
             node.Children.forEach(child => {
-                render(child, level + 1);
+                ul.appendChild(createTree(child));
             });
+            li.appendChild(ul);
         }
+
+        return li;
     }
 
-    render(data);
+    let rootUl = document.createElement("ul");
+    rootUl.appendChild(createTree(data));
+    container.appendChild(rootUl);
 </script>
 
 <style>
@@ -51,20 +51,40 @@
     border: 1px solid #ccc;
     border-radius: 10px;
     background: white;
-    padding: 15px;
+    padding: 20px;
     font-family: monospace;
 }
 
-.node {
-    background: #3b82f6;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 6px;
-    display: inline-block;
+#tree ul {
+    padding-left: 20px;
+    position: relative;
 }
 
-#tree div {
-    border-left: 2px solid #ddd;
-    padding-left: 10px;
+#tree li {
+    list-style: none;
+    margin: 10px 0;
+    position: relative;
+}
+
+#tree li::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    border-left: 2px solid #999;
+    border-bottom: 2px solid #999;
+    width: 10px;
+    height: 20px;
+}
+
+#tree li:last-child::before {
+    border-left: 2px solid transparent;
+}
+
+#tree span {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: #f3f4f6;
+    display: inline-block;
 }
 </style>

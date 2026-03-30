@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ItemProcessorApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cc07098dd95608726733a1777d2a2dce4c5703d6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f9762ae6a2bc58c7cd5cebbf17148bf7fe2ffe8")]
 [assembly: System.Reflection.AssemblyProductAttribute("ItemProcessorApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ItemProcessorApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
