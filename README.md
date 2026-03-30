@@ -7,7 +7,7 @@
 ### Steps
 
 1. Clone the repository  
-   git clone https://github.com/<your-username>/<repo-name>.git
+   git clone [https://github.com/<your-username>/<repo-name>.git](https://github.com/Yug-Shevarkar/Projects.git)
 
 2. Setup Database  
    - Create DB in SQL Server  
