@@ -1,0 +1,10 @@
+@model ItemProcessorApp.Models.Item
+
+<h2>Edit Item</h2>
+
+<form method="post">
+    <input type="number" name="weight" value="@Model.Weight" required />
+    <button>Update</button>
+</form>
+
+<a href="/Item">Back</a>

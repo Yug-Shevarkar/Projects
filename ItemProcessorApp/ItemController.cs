@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using ItemProcessorApp.Models;
 using ItemProcessorApp.Data;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace ItemProcessorApp.Controllers
 {
@@ -15,44 +15,78 @@ namespace ItemProcessorApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search)
         {
             if (HttpContext.Session.GetString("User") == null)
-            {
                 return RedirectToAction("Login", "Account");
-            }
 
+            var items = _context.Items.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+                items = items.Where(i => i.Weight.ToString().Contains(search));
+
+            return View(items.ToList());
+        }
+
+        public IActionResult Create()
+        {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Process(double weight)
+        public IActionResult Create(double weight)
         {
-            if (HttpContext.Session.GetString("User") == null)
+            if (weight <= 0 || weight > 100)
             {
-                return RedirectToAction("Login", "Account");
+                ViewBag.Error = "Weight must be between 0 and 100";
+                return View();
             }
 
-            if (weight <= 0)
+            var item = new Item { Weight = weight };
+            _context.Items.Add(item);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var item = _context.Items.Find(id);
+            return View(item);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(int id, double weight)
+        {
+            var item = _context.Items.Find(id);
+
+            if (item != null)
             {
-                ModelState.AddModelError("", "Weight must be greater than 0");
-                return View("Index");
+                item.Weight = weight;
+                _context.SaveChanges();
             }
 
-            if (weight > 100)
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int id)
+        {
+            var item = _context.Items.Find(id);
+
+            if (item != null)
             {
-                ModelState.AddModelError("", "Maximum allowed weight is 100");
-                return View("Index");
+                _context.Items.Remove(item);
+                _context.SaveChanges();
             }
 
-            var root = new Item
-            {
-                Weight = weight,
-                ParentId = null
-            };
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Process(int id)
+        {
+            var root = _context.Items.Find(id);
 
             ProcessItem(root);
-            SaveItems(root, null);
 
             return View("Result", root);
         }
@@ -64,31 +98,11 @@ namespace ItemProcessorApp.Controllers
             var child1 = new Item { Weight = item.Weight / 2 };
             var child2 = new Item { Weight = item.Weight / 2 };
 
-            item.Children = new List<Item> { child1, child2 };
+            item.Children = new System.Collections.Generic.List<Item> { child1, child2 };
 
             foreach (var child in item.Children)
             {
                 ProcessItem(child);
-            }
-        }
-
-        private void SaveItems(Item item, int? parentId)
-        {
-            var newItem = new Item
-            {
-                Weight = item.Weight,
-                ParentId = parentId
-            };
-
-            _context.Items.Add(newItem);
-            _context.SaveChanges();
-
-            if (item.Children != null)
-            {
-                foreach (var child in item.Children)
-                {
-                    SaveItems(child, newItem.Id);
-                }
             }
         }
     }

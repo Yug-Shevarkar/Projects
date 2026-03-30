@@ -1,0 +1,22 @@
+@model ItemProcessorApp.Models.Item
+
+<h2>Process Item</h2>
+
+<h3>Parent Weight: @Model.Weight</h3>
+
+<form method="post" action="/Item/AddChild">
+    <input type="hidden" name="parentId" value="@Model.Id" />
+    <input type="number" name="weight" placeholder="Child weight" required />
+    <button>Add Child</button>
+</form>
+
+<h3>Children</h3>
+
+<ul>
+@foreach (var item in Model.Children ?? new List<ItemProcessorApp.Models.Item>())
+{
+    <li>@item.Weight</li>
+}
+</ul>
+
+<a href="/Item">Back</a>

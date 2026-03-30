@@ -1,0 +1,22 @@
+@model List<ItemProcessorApp.Models.Item>
+
+<h2>Processed Items</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Weight</th>
+        <th>ParentId</th>
+    </tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>@item.Id</td>
+        <td>@item.Weight</td>
+        <td>@item.ParentId</td>
+    </tr>
+}
+</table>
+
+<a href="/Item">Back</a>
