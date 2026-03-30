@@ -1,9 +1,11 @@
 @model ItemProcessorApp.Models.Item
 
-<h2 style="text-align:center;">Flow Diagram</h2>
+<h2 style="text-align:center;">Flow Representation</h2>
 
 <div class="diagram-container">
-    <svg id="diagram" width="1000" height="600"></svg>
+    <div class="scroll-box">
+        <div id="tree"></div>
+    </div>
 </div>
 
 <div style="text-align:center; margin-top:20px;">
@@ -12,52 +14,26 @@
 
 <script>
     const data = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
-    const svg = document.getElementById("diagram");
+    const container = document.getElementById("tree");
 
-    function drawNode(x, y, text) {
-        let circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", x);
-        circle.setAttribute("cy", y);
-        circle.setAttribute("r", 22);
-        circle.setAttribute("fill", "#3b82f6");
-        svg.appendChild(circle);
+    function render(node, level = 0) {
+        let div = document.createElement("div");
+        div.style.marginLeft = (level * 30) + "px";
+        div.style.padding = "6px 0";
 
-        let label = document.createElementNS("http://www.w3.org/2000/svg", "text");
-        label.setAttribute("x", x);
-        label.setAttribute("y", y + 5);
-        label.setAttribute("text-anchor", "middle");
-        label.setAttribute("fill", "white");
-        label.textContent = text;
-        svg.appendChild(label);
+        let prefix = level === 0 ? "" : "└── ";
+        div.innerHTML = `<span class="node">${prefix}${node.Weight}</span>`;
+
+        container.appendChild(div);
+
+        if (node.Children && node.Children.length > 0) {
+            node.Children.forEach(child => {
+                render(child, level + 1);
+            });
+        }
     }
 
-    function drawLine(x1, y1, x2, y2) {
-        let line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1);
-        line.setAttribute("y1", y1);
-        line.setAttribute("x2", x2);
-        line.setAttribute("y2", y2);
-        line.setAttribute("stroke", "#555");
-        svg.appendChild(line);
-    }
-
-    function render(node, x, y, gap) {
-        drawNode(x, y, node.Weight);
-
-        if (!node.Children || node.Children.length === 0) return;
-
-        let startX = x - (gap * (node.Children.length - 1)) / 2;
-
-        node.Children.forEach((child, i) => {
-            let childX = startX + i * gap;
-            let childY = y + 120;
-
-            drawLine(x, y + 22, childX, childY - 22);
-            render(child, childX, childY, gap / 1.5);
-        });
-    }
-
-    render(data, 500, 60, 200);
+    render(data);
 </script>
 
 <style>
@@ -67,9 +43,28 @@
     margin-top: 20px;
 }
 
-svg {
-    background: white;
+.scroll-box {
+    width: 100%;
+    max-width: 900px;
+    height: 600px;
+    overflow: auto;
+    border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background: white;
+    padding: 15px;
+    font-family: monospace;
+}
+
+.node {
+    background: #3b82f6;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+#tree div {
+    border-left: 2px solid #ddd;
+    padding-left: 10px;
 }
 </style>
