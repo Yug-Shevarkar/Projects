@@ -33,6 +33,18 @@ namespace ItemProcessorApp.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            if (weight <= 0)
+            {
+                ModelState.AddModelError("", "Weight must be greater than 0");
+                return View("Index");
+            }
+
+            if (weight > 100)
+            {
+                ModelState.AddModelError("", "Maximum allowed weight is 100");
+                return View("Index");
+            }
+
             var root = new Item
             {
                 Weight = weight,

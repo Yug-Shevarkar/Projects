@@ -7,8 +7,12 @@
         <h2>Process Item</h2>
         <p>Enter weight to generate flow</p>
 
+        <p style="color:red;">
+            @Html.ValidationSummary()
+        </p>
+
         <form method="post" action="/Item/Process">
-            <input type="number" step="0.1" name="weight" placeholder="Enter weight" required />
+            <input type="number" step="0.1" name="weight" placeholder="Enter weight" min="0.1" max="100" required />
             <button class="btn">Generate</button>
         </form>
     </div>
